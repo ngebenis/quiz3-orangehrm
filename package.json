@@ -1,0 +1,26 @@
+{
+  "name": "quiz3-orangehrm-login",
+  "version": "1.0.0",
+  "description": "Quiz 3 - UI Automation Cypress untuk fitur Login OrangeHRM (12 test case dari Quiz 2)",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run",
+    "test:open": "cypress open"
+  },
+  "keywords": [
+    "cypress",
+    "automation",
+    "orangehrm"
+  ],
+  "author": "Beni Santoso",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cypress": "^13.17.0"
+  },
+  "devDependencies": {
+    "mochawesome": "^8.1.1",
+    "mochawesome-merge": "^5.1.1",
+    "mochawesome-report-generator": "^6.3.2"
+  }
+}
