@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "cypress run",
-    "test:login": "cypress run --spec cypress/e2e/login.cy.js",
-    "test:intercept": "cypress run --spec cypress/e2e/intercept/login-intercept.cy.js",
+    "test:login": "REPORT_NAME=report-login cypress run --spec cypress/e2e/login.cy.js",
+    "test:intercept": "REPORT_NAME=report-intercept cypress run --spec cypress/e2e/intercept/login-intercept.cy.js",
     "test:open": "cypress open"
   },
   "keywords": [

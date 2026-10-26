@@ -30,13 +30,15 @@ quiz3-orangehrm-login/
 
 ```bash
 npm install
-npx cypress run                     # semua spec (headless)
-npx cypress run --spec cypress/e2e/login.cy.js
-npx cypress open                    # mode interaktif (Test Runner)
+npm run test:login          # Quiz 3      -> cypress/reports/report-login.html
+npm run test:intercept      # Hari 16     -> cypress/reports/report-intercept.html
+npm test                    # semua spec (headless)
+npx cypress open            # mode interaktif (Test Runner)
 ```
 
 Butuh **Node.js 18+**. Setelah run, laporan HTML otomatis dibuat di
-`cypress/reports/quiz3-login.html` dan video di `cypress/videos/login.cy.js.mp4`.
+`cypress/reports/`, dan rekaman video (tidak ikut di-commit karena `.gitignore`)
+muncul di `cypress/videos/`.
 
 ## 3. Daftar Test Case (12)
 
@@ -111,8 +113,8 @@ OrangeHRM - Login Feature
   12 passing (2m)
 ```
 
-Bukti: `cypress/reports/hasil-running.png`, `cypress/reports/quiz3-login.html`,
-dan rekaman `cypress/videos/login.cy.js.mp4`.
+Bukti: `cypress/reports/hasil-login.png` (screenshot 12 passing) dan
+`cypress/reports/report-login.html` (laporan lengkap).
 
 ### Hasil run tugas intercept
 
@@ -134,8 +136,8 @@ OrangeHRM - Login dengan Intercept
   12 passing (3m)
 ```
 
-Bukti: `cypress/reports/hasil-intercept.png`, `cypress/reports/quiz3-intercept.html`,
-dan rekaman `cypress/videos/login-intercept.cy.js.mp4`.
+Bukti: `cypress/reports/hasil-intercept.png` (screenshot 12 passing) dan
+`cypress/reports/report-intercept.html` (laporan lengkap).
 
 ## 7. Tugas Intercept (Hari 16)
 

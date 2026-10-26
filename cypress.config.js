@@ -17,7 +17,9 @@ module.exports = defineConfig({
     reporter: 'mochawesome',
     reporterOptions: {
       reportDir: 'cypress/reports',
-      reportFilename: 'quiz3-login',
+      // Nama file report bisa diganti per-spec lewat env REPORT_NAME
+      // (lihat script test:login / test:intercept di package.json).
+      reportFilename: process.env.REPORT_NAME || 'report-login',
       html: true,
       json: true,
       overwrite: true
