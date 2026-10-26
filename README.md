@@ -21,7 +21,9 @@ quiz3-orangehrm-login/
 │   │   └── e2e.js
 │   ├── reports/                 # hasil run (HTML report + screenshot)
 │   └── videos/                  # rekaman eksekusi
-├── cypress.config.js            # baseUrl, viewport, timeout, reporter
+├── cypress.config.base.js       # konfigurasi bersama (timeout, reporter, dll)
+├── cypress.config.js            # config Quiz 3          -> report-login.html
+├── cypress.intercept.config.js  # config Hari 16 (intercept) -> report-intercept.html
 ├── package.json
 └── README.md
 ```
@@ -39,6 +41,34 @@ npx cypress open            # mode interaktif (Test Runner)
 Butuh **Node.js 18+**. Setelah run, laporan HTML otomatis dibuat di
 `cypress/reports/`, dan rekaman video (tidak ikut di-commit karena `.gitignore`)
 muncul di `cypress/videos/`.
+
+### Windows (CMD / PowerShell)
+
+Sama saja — semua script di `package.json` sudah portabel, tidak ada sintaks
+`VAR=value` khas Linux. Jalankan di **Command Prompt** atau **PowerShell**:
+
+```bat
+cd quiz3-orangehrm-login
+npm install
+npm run test:login
+npm run test:intercept
+npx cypress open
+```
+
+Atau cukup **double-click `run-tests.bat`** — script itu sudah menjalankan
+`npm install` (kalau `node_modules` belum ada) lalu kedua spec berurutan.
+
+Catatan Windows:
+
+- Install **Node.js LTS** dari <https://nodejs.org> (pilih installer `.msi`), lalu
+  tutup-buka terminal supaya `node`/`npm` terbaca.
+- Cypress butuh desktop — jangan dijalankan lewat SSH tanpa display. `npm run
+  test:login` tetap jalan headless walau tanpa jendela terlihat.
+- Jika `npm run test:*` diblokir Execution Policy di PowerShell, pakai
+  `cmd /c "npm run test:login"` atau jalankan dari Command Prompt.
+- Path folder pakai `\`; semua perintah `cypress run` tetap sama.
+- Report dibuka dengan `start cypress\reports\report-login.html` (CMD) atau
+  `start cypress/reports/report-login.html` (PowerShell).
 
 ## 3. Daftar Test Case (12)
 

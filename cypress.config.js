@@ -1,28 +1,7 @@
 const { defineConfig } = require('cypress');
+const buildE2EConfig = require('./cypress.config.base');
 
+// Dipakai untuk Quiz 3 (cypress/e2e/login.cy.js) -> cypress/reports/report-login.html
 module.exports = defineConfig({
-  e2e: {
-    baseUrl: 'https://opensource-demo.orangehrmlive.com',
-    specPattern: 'cypress/e2e/**/*.cy.js',
-    viewportWidth: 1366,
-    viewportHeight: 768,
-    defaultCommandTimeout: 10000,
-    pageLoadTimeout: 60000,
-    video: true,
-    screenshotOnRunFailure: true,
-    retries: {
-      runMode: 1,
-      openMode: 0
-    },
-    reporter: 'mochawesome',
-    reporterOptions: {
-      reportDir: 'cypress/reports',
-      // Nama file report bisa diganti per-spec lewat env REPORT_NAME
-      // (lihat script test:login / test:intercept di package.json).
-      reportFilename: process.env.REPORT_NAME || 'report-login',
-      html: true,
-      json: true,
-      overwrite: true
-    }
-  }
+  e2e: buildE2EConfig('report-login')
 });
