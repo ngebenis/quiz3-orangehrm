@@ -1,10 +1,12 @@
 {
   "name": "quiz3-orangehrm-login",
   "version": "1.0.0",
-  "description": "Quiz 3 - UI Automation Cypress untuk fitur Login OrangeHRM (12 test case dari Quiz 2)",
+  "description": "Quiz 3 + Hari 16 - UI Automation Cypress untuk fitur Login OrangeHRM (12 test case + 12 test case intercept)",
   "main": "index.js",
   "scripts": {
     "test": "cypress run",
+    "test:login": "cypress run --spec cypress/e2e/login.cy.js",
+    "test:intercept": "cypress run --spec cypress/e2e/intercept/login-intercept.cy.js",
     "test:open": "cypress open"
   },
   "keywords": [

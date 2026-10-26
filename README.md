@@ -14,7 +14,9 @@ Automation testing untuk fitur **Login** pada [OrangeHRM OS 5.9 Demo](https://op
 quiz3-orangehrm-login/
 ├── cypress/
 │   ├── e2e/
-│   │   └── login.cy.js          # 12 it block (action + assertion)
+│   │   ├── login.cy.js              # Quiz 3 — 12 it block (action + assertion)
+│   │   └── intercept/
+│   │       └── login-intercept.cy.js  # Hari 16 — 12 it block dengan cy.intercept()
 │   ├── support/
 │   │   └── e2e.js
 │   ├── reports/                 # hasil run (HTML report + screenshot)
@@ -112,11 +114,93 @@ OrangeHRM - Login Feature
 Bukti: `cypress/reports/hasil-running.png`, `cypress/reports/quiz3-login.html`,
 dan rekaman `cypress/videos/login.cy.js.mp4`.
 
-## 7. Catatan
+### Hasil run tugas intercept
 
-- Script dibuat **basic**: hanya memakai `cy.visit`, `cy.get`, `type`, `click`,
-  `clearCookies`, dan assertion `should`. Tidak ada custom command, Page Object,
-  fixture, intercept, atau looping.
+```
+OrangeHRM - Login dengan Intercept
+  ✓ TC-INT-001 - Intercept POST /auth/validate saat login valid
+  ✓ TC-INT-002 - Intercept GET /auth/login saat halaman login dibuka
+  ✓ TC-INT-003 - Intercept GET /core/i18n/messages saat login gagal
+  ✓ TC-INT-004 - Intercept GET /auth/requestPasswordResetCode di halaman forgot password
+  ✓ TC-INT-005 - Intercept GET /dashboard/index setelah login berhasil
+  ✓ TC-INT-006 - Intercept dan modifikasi GET /api/v2/dashboard/employees/action-summary
+  ✓ TC-INT-007 - Intercept GET /api/v2/dashboard/employees/time-at-work
+  ✓ TC-INT-008 - Intercept GET /api/v2/dashboard/shortcuts
+  ✓ TC-INT-009 - Intercept GET /api/v2/buzz/feed
+  ✓ TC-INT-010 - Intercept GET /api/v2/dashboard/employees/leaves
+  ✓ TC-INT-011 - Intercept GET /auth/logout saat logout
+  ✓ TC-INT-012 - Intercept GET /api/v2/dashboard/employees/subunit
+
+  12 passing (3m)
+```
+
+Bukti: `cypress/reports/hasil-intercept.png`, `cypress/reports/quiz3-intercept.html`,
+dan rekaman `cypress/videos/login-intercept.cy.js.mp4`.
+
+## 7. Tugas Intercept (Hari 16)
+
+File: **`cypress/e2e/intercept/login-intercept.cy.js`** — 12 `it` block, **setiap test
+memakai intercept dengan URL yang berbeda** (tidak ada yang diulang).
+
+Jalankan:
+
+```bash
+npx cypress run --spec cypress/e2e/intercept/login-intercept.cy.js
+```
+
+| No | Test Case ID | Intercept (method + URL) | Tipe | Assertion pada intercept |
+|----|--------------|--------------------------|------|--------------------------|
+| 1 | TC-INT-001 | `POST /web/index.php/auth/validate` | Request + response | method `POST`, body `include` `username=Admin`, status `302` |
+| 2 | TC-INT-002 | `GET /web/index.php/auth/login` | Response | status `200`, `content-type` `text/html`, body `include` `<title>OrangeHRM</title>` |
+| 3 | TC-INT-003 | `GET /web/index.php/core/i18n/messages` | Response | status `200`, body object dan tidak kosong |
+| 4 | TC-INT-004 | `GET /web/index.php/auth/requestPasswordResetCode` | Response | status `200`, body `include` `<title>OrangeHRM</title>` |
+| 5 | TC-INT-005 | `GET /web/index.php/dashboard/index` | Response | status `200`, breadcrumb `Dashboard` |
+| 6 | TC-INT-006 | `GET /web/index.php/api/v2/dashboard/employees/action-summary` | **Stub / modifikasi response** | `pendingActionCount` diubah jadi `7`, UI menampilkan `Leave Requests to Approve` |
+| 7 | TC-INT-007 | `GET /web/index.php/api/v2/dashboard/employees/time-at-work` | Request + response | query punya `currentDate`, status `200`, body punya `data` |
+| 8 | TC-INT-008 | `GET /web/index.php/api/v2/dashboard/shortcuts` | Response | status `200`, `data` punya `leave.apply_leave` |
+| 9 | TC-INT-009 | `GET /web/index.php/api/v2/buzz/feed` | Request + response | query `limit` = `5`, status `200` |
+| 10 | TC-INT-010 | `GET /web/index.php/api/v2/dashboard/employees/leaves` | Request + response | query punya `date`, `data` array |
+| 11 | TC-INT-011 | `GET /web/index.php/auth/logout` | Response | method `GET`, status `302`, URL kembali ke `/auth/login` |
+| 12 | TC-INT-012 | `GET /web/index.php/api/v2/dashboard/employees/subunit` | Response | status `200`, body punya `data` |
+
+### Endpoint diverifikasi, bukan ditebak
+
+Semua URL di atas direkam dari traffic nyata demo OrangeHRM (lewat `cy.intercept('**/*')`
+pada satu kali login), lalu dipakai sebagai target intercept. Itulah sebabnya tiap test
+mendapat URL yang benar-benar dipanggil aplikasi — bukan asumsi.
+
+### Pola tiap test
+
+```js
+it('TC-INT-005 - Intercept GET /dashboard/index setelah login berhasil', () => {
+  // Intercept
+  cy.intercept('GET', '**/web/index.php/dashboard/index').as('dashboardPage');
+
+  // Action
+  cy.visit(loginUrl);
+  cy.get('input[name="username"]').type('Admin');
+  cy.get('input[name="password"]').type('admin123');
+  cy.get('button[type="submit"]').click();
+
+  // Assertion
+  cy.wait('@dashboardPage').then(({ request, response }) => {
+    expect(request.method).to.eq('GET');
+    expect(response.statusCode).to.eq(200);
+  });
+  cy.get('.oxd-topbar-header-breadcrumb-module').should('have.text', 'Dashboard');
+});
+```
+
+Setiap test tetap **action dulu → assertion sesudahnya**, dan assertion intercept
+(`cy.wait('@alias')`) diletakkan sebelum assertion UI supaya bukti network-nya eksplisit.
+
+## 8. Catatan
+
+- `cypress/e2e/login.cy.js` (Quiz 3) dibuat **basic**: hanya memakai `cy.visit`,
+  `cy.get`, `type`, `click`, `clearCookies`, dan assertion `should`. Tidak ada custom
+  command, Page Object, fixture, intercept, atau looping.
+- `cypress/e2e/intercept/login-intercept.cy.js` (Hari 16) menambahkan `cy.intercept`
+  + `cy.wait('@alias')` sebagai lapisan verifikasi network, terpisah dari file Quiz 3.
 - Demo OrangeHRM dipakai bersama publik, jadi kredensial dapat berubah sewaktu-waktu.
   Jika login gagal seluruhnya, cek kredensial terbaru di halaman demo.
 - `retries: 1` pada `runMode` hanya untuk mengantisipasi latensi jaringan demo publik,
