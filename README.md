@@ -350,10 +350,18 @@ Beberapa temuan saat membuat script yang mempengaruhi cara page object ditulis:
    `OrangeHRM OS` agar tidak rapuh.
 5. Dashboard memakai grid 7 widget, bukan `.orangehrm-dashboard-card`, jadi
    `countWidgets()` menghitung anak dari `.orangehrm-dashboard-grid`.
-6. Logout memicu unhandled promise rejection dari kode OrangeHRM sendiri
-   (`Cannot read properties of undefined (reading 'response')`) karena axios
-   membatalkan request dashboard tepat saat logout. `cypress/support/e2e.js`
-   mengabaikan **hanya pesan itu** melalui `Cypress.on('uncaught:exception')`;
+6. Logout bisa memicu crash di kode OrangeHRM sendiri: dashboard menembak
+   beberapa request API, dan kalau logout diklik saat request masih berjalan,
+   axios membatalkannya lalu kode aplikasi membaca `.response` dari hasil
+   `undefined` (`Cannot read properties of undefined (reading 'response')`).
+   Ini race condition — bisa lulus di satu mesin, gagal di mesin lain.
+   **Perbaikan utama:** `DashboardPage.logout()` memanggil
+   `waitUntilDashboardSettled()` dulu (grid terlihat, widget ter-render,
+   spinner hilang) sehingga tidak ada request yang menggantung. **Jaring
+   pengaman:** `cypress/support/e2e.js` mengabaikan hanya pesan error itu;
    error lain tetap menggagalkan test.
+7. `pageLoadTimeout` dinaikkan ke 120 detik karena demo publik kadang lambat
+   saat run dingin (pernah `Timed out after waiting 60000ms for your remote
+   page to load`).
 
 Dokumentasi lengkap: [cypress/e2e/pom/README-pom.md](cypress/e2e/pom/README-pom.md)
