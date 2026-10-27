@@ -14,14 +14,27 @@ Automation testing untuk fitur **Login** pada [OrangeHRM OS 5.9 Demo](https://op
 quiz3-orangehrm-login/
 ├── cypress/
 │   ├── e2e/
-│   │   ├── login.cy.js              # Quiz 3 — 12 it block (action + assertion)
-│   │   └── intercept/
-│   │       └── login-intercept.cy.js  # Hari 16 — 12 it block dengan cy.intercept()
+│   │   ├── login.cy.js              # Quiz 3  — 12 it block (action + assertion)
+│   │   ├── intercept/
+│   │   │   ├── login-intercept.cy.js  # Hari 16 — 12 it block dengan cy.intercept()
+│   │   │   └── README-intercept.md
+│   │   └── pom/
+│   │       ├── login-pom.cy.js        # Hari 17 — 14 it block dengan POM
+│   │       └── README-pom.md
+│   ├── pages/                   # Hari 17 — Page Object
+│   │   ├── LoginPage.js
+│   │   └── DashboardPage.js
 │   ├── support/
+│   │   ├── data/
+│   │   │   └── loginData.js     # Hari 17 — data test, error message, URL
 │   │   └── e2e.js
 │   ├── reports/                 # hasil run (HTML report + screenshot)
 │   └── videos/                  # rekaman eksekusi
-├── cypress.config.js            # baseUrl, viewport, timeout, reporter
+├── cypress.config.base.js       # konfigurasi bersama (timeout, reporter, dll)
+├── cypress.config.js            # config Quiz 3          -> report-login.html
+├── cypress.intercept.config.js  # config Hari 16 (intercept) -> report-intercept.html
+├── cypress.pom.config.js        # config Hari 17 (POM)     -> report-pom.html
+├── run-tests.bat                # shortcut Windows (double-click)
 ├── package.json
 └── README.md
 ```
@@ -32,13 +45,43 @@ quiz3-orangehrm-login/
 npm install
 npm run test:login          # Quiz 3      -> cypress/reports/report-login.html
 npm run test:intercept      # Hari 16     -> cypress/reports/report-intercept.html
-npm test                    # semua spec (headless)
+npm run test:pom            # Hari 17     -> cypress/reports/report-pom.html
+npm test                    # ketiga spec berurutan (headless)
 npx cypress open            # mode interaktif (Test Runner)
 ```
 
 Butuh **Node.js 18+**. Setelah run, laporan HTML otomatis dibuat di
 `cypress/reports/`, dan rekaman video (tidak ikut di-commit karena `.gitignore`)
 muncul di `cypress/videos/`.
+
+### Windows (CMD / PowerShell)
+
+Sama saja — semua script di `package.json` sudah portabel, tidak ada sintaks
+`VAR=value` khas Linux. Jalankan di **Command Prompt** atau **PowerShell**:
+
+```bat
+cd quiz3-orangehrm
+npm install
+npm run test:login
+npm run test:intercept
+npm run test:pom
+npx cypress open
+```
+
+Atau cukup **double-click `run-tests.bat`** — script itu sudah menjalankan
+`npm install` (kalau `node_modules` belum ada) lalu kedua spec berurutan.
+
+Catatan Windows:
+
+- Install **Node.js LTS** dari <https://nodejs.org> (pilih installer `.msi`), lalu
+  tutup-buka terminal supaya `node`/`npm` terbaca.
+- Cypress butuh desktop — jangan dijalankan lewat SSH tanpa display. `npm run
+  test:login` tetap jalan headless walau tanpa jendela terlihat.
+- Jika `npm run test:*` diblokir Execution Policy di PowerShell, pakai
+  `cmd /c "npm run test:login"` atau jalankan dari Command Prompt.
+- Path folder pakai `\`; semua perintah `cypress run` tetap sama.
+- Report dibuka dengan `start cypress\reports\report-login.html` (CMD) atau
+  `start cypress/reports/report-login.html` (PowerShell).
 
 ## 3. Daftar Test Case (12)
 
@@ -207,3 +250,110 @@ Setiap test tetap **action dulu → assertion sesudahnya**, dan assertion interc
   Jika login gagal seluruhnya, cek kredensial terbaru di halaman demo.
 - `retries: 1` pada `runMode` hanya untuk mengantisipasi latensi jaringan demo publik,
   bukan untuk menutupi kegagalan nyata.
+
+## 9. Automation with Page Object Model (POM) — Hari 17
+
+Automation fitur Login OrangeHRM yang ditulis ulang memakai **Page Object Model**,
+dengan **14 test case** (ketentuan minimal 8).
+
+Isi folder ini terpisah penuh dari Quiz 3 (`cypress/e2e/login.cy.js`) dan
+Hari 16 (`cypress/e2e/intercept/login-intercept.cy.js`).
+
+### Struktur POM
+
+```
+cypress/pages/LoginPage.js          # locator + aksi halaman login
+cypress/pages/DashboardPage.js      # locator + aksi dashboard
+cypress/support/data/loginData.js   # data test, error message, URL
+cypress/e2e/pom/login-pom.cy.js     # 14 test case
+cypress/e2e/pom/README-pom.md       # dokumentasi POM
+cypress.pom.config.js               # config khusus POM (report-pom)
+```
+
+Pemisahan tanggung jawab:
+
+| Lapisan | Isi | File |
+|---|---|---|
+| Page Object | locator + method aksi/validasi | `cypress/pages/*.js` |
+| Test Data | credentials, pesan error, URL | `cypress/support/data/loginData.js` |
+| Test Case | skenario uji tanpa locator mentah | `cypress/e2e/pom/login-pom.cy.js` |
+
+### Page Objects
+
+- **LoginPage**: `visit()`, `fillUsername()`, `fillPassword()`, `clickLogin()`,
+  `login()`, `verifyLoginPage()`, `verifyErrorMessage()`, `verifyFieldRequired()`,
+  `verifyStillOnLogin()`, `verifyCopyright()`, `clickForgotPassword()`,
+  `verifyForgotPasswordPage()`, `submitEmpty()`.
+- **DashboardPage**: `verifyDashboard()`, `logout()`, `navigateToMenu()`,
+  `verifyQuickLaunch()`, `countWidgets()`, `getWelcomeMessage()`.
+- **loginData**: objek credentials (valid, invalid, empty, caseSensitive,
+  whitespace), `errorMessages`, `pageTitles`, dan `urls`.
+
+### 14 Test Case
+
+| # | Test Case | Yang divalidasi |
+|---|---|---|
+| 1 | TC-POM-001 | Login valid → dashboard tampil, URL & title benar |
+| 2 | TC-POM-002 | Username tidak terdaftar → alert "Invalid credentials" |
+| 3 | TC-POM-003 | Password salah → alert "Invalid credentials" |
+| 4 | TC-POM-004 | Username kosong → 1 pesan "Required" |
+| 5 | TC-POM-005 | Password kosong → 1 pesan "Required" |
+| 6 | TC-POM-006 | Kedua field kosong → 2 pesan "Required" |
+| 7 | TC-POM-007 | Username case-sensitive (`ADMIN` ditolak, `Admin` diterima) |
+| 8 | TC-POM-008 | Alur forgot password → halaman reset tampil |
+| 9 | TC-POM-009 | Login lalu logout → kembali ke halaman login |
+| 10 | TC-POM-010 | Branding & copyright halaman login |
+| 11 | TC-POM-011 | Spasi di credentials → ditolak sistem |
+| 12 | TC-POM-012 | Tiga percobaan login berurutan (salah → kosong → benar) |
+| 13 | TC-POM-013 | Navigasi Admin → PIM → Dashboard |
+| 14 | TC-POM-014 | Verifikasi 7 widget dashboard + Quick Launch |
+
+### Cara Menjalankan
+
+```bash
+# semua test POM
+npm run test:pom
+
+# mode interaktif
+npm run test:pom:open
+
+# perintah langsung
+npx cypress run --config-file cypress.pom.config.js
+```
+
+Script `npm run test:pom` portabel — tidak memakai environment variable,
+jadi jalan sama di Linux maupun Windows (CMD/PowerShell).
+
+### Hasil run terakhir
+
+```
+login-pom.cy.js   05:17   14 passing   0 failing
+```
+
+Bukti:
+
+- HTML report : `cypress/reports/report-pom.html`
+- JSON report : `cypress/reports/report-pom.json`
+- Screenshot  : `cypress/reports/hasil-pom.png`
+- Video       : `cypress/videos/login-pom.cy.js.mp4`
+
+### Catatan perilaku OrangeHRM
+
+Beberapa temuan saat membuat script yang mempengaruhi cara page object ditulis:
+
+1. Field kosong tidak memicu alert, melainkan validasi HTML5 `required` —
+   muncul pesan inline `Required` di `.oxd-input-field-error-message`.
+2. `cy.type('')` dilarang Cypress, jadi `fillUsername`/`fillPassword` hanya
+   memanggil `.type()` kalau nilainya tidak kosong.
+3. Spasi tidak di-trim sistem — `'  Admin  '` ditolak "Invalid credentials".
+4. Nomor versi di footer berubah (5.7 → 5.9), jadi assertion memakai substring
+   `OrangeHRM OS` agar tidak rapuh.
+5. Dashboard memakai grid 7 widget, bukan `.orangehrm-dashboard-card`, jadi
+   `countWidgets()` menghitung anak dari `.orangehrm-dashboard-grid`.
+6. Logout memicu unhandled promise rejection dari kode OrangeHRM sendiri
+   (`Cannot read properties of undefined (reading 'response')`) karena axios
+   membatalkan request dashboard tepat saat logout. `cypress/support/e2e.js`
+   mengabaikan **hanya pesan itu** melalui `Cypress.on('uncaught:exception')`;
+   error lain tetap menggagalkan test.
+
+Dokumentasi lengkap: [cypress/e2e/pom/README-pom.md](cypress/e2e/pom/README-pom.md)
