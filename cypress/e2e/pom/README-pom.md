@@ -135,3 +135,16 @@ mempengaruhi cara page object ditulis:
    `OrangeHRM OS` tanpa nomor versi agar tidak rapuh.
 5. **Dashboard memakai grid 7 widget**, bukan class `.orangehrm-dashboard-card`,
    jadi `countWidgets()` menghitung anak dari `.orangehrm-dashboard-grid`.
+6. **Logout memicu unhandled promise rejection dari kode OrangeHRM sendiri** —
+   axios membatalkan request dashboard yang masih berjalan tepat saat logout,
+   lalu kode aplikasi membaca `.response` dari hasil yang sudah `undefined`:
+
+   ```
+   TypeError: Cannot read properties of undefined (reading 'response')
+   ```
+
+   Cypress otomatis menggagalkan test karena error ini berasal dari application
+   code. Karena bukan kegagalan fitur yang diuji, `cypress/support/e2e.js`
+   mengabaikan **hanya pesan error itu** lewat `Cypress.on('uncaught:exception')`.
+   Handler-nya sempit — error lain tetap menggagalkan test supaya bug asli tidak
+   ikut tersembunyi.

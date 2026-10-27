@@ -350,5 +350,10 @@ Beberapa temuan saat membuat script yang mempengaruhi cara page object ditulis:
    `OrangeHRM OS` agar tidak rapuh.
 5. Dashboard memakai grid 7 widget, bukan `.orangehrm-dashboard-card`, jadi
    `countWidgets()` menghitung anak dari `.orangehrm-dashboard-grid`.
+6. Logout memicu unhandled promise rejection dari kode OrangeHRM sendiri
+   (`Cannot read properties of undefined (reading 'response')`) karena axios
+   membatalkan request dashboard tepat saat logout. `cypress/support/e2e.js`
+   mengabaikan **hanya pesan itu** melalui `Cypress.on('uncaught:exception')`;
+   error lain tetap menggagalkan test.
 
 Dokumentasi lengkap: [cypress/e2e/pom/README-pom.md](cypress/e2e/pom/README-pom.md)
