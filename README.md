@@ -18,15 +18,21 @@ quiz3-orangehrm-login/
 │   │   ├── intercept/
 │   │   │   ├── login-intercept.cy.js  # Hari 16 — 12 it block dengan cy.intercept()
 │   │   │   └── README-intercept.md
-│   │   └── pom/
-│   │       ├── login-pom.cy.js        # Hari 17 — 14 it block dengan POM
-│   │       └── README-pom.md
+│   │   ├── pom/
+│   │   │   ├── login-pom.cy.js        # Hari 17 — 14 it block dengan POM
+│   │   │   └── README-pom.md
+│   │   └── api/
+│   │       ├── category-api.cy.js     # Hari 18 — 14 test case API (cy.request)
+│   │       └── README-api.md
+│   ├── api/
+│   │   └── CategoryApi.js       # Hari 18 — service layer endpoint categories
 │   ├── pages/                   # Hari 17 — Page Object
 │   │   ├── LoginPage.js
 │   │   └── DashboardPage.js
 │   ├── support/
 │   │   ├── data/
-│   │   │   └── loginData.js     # Hari 17 — data test, error message, URL
+│   │   │   ├── loginData.js     # Hari 17 — data test, error message, URL
+│   │   │   └── categoryData.js  # Hari 18 — payload, status code, pesan error API
 │   │   └── e2e.js
 │   ├── reports/                 # hasil run (HTML report + screenshot)
 │   └── videos/                  # rekaman eksekusi
@@ -34,6 +40,7 @@ quiz3-orangehrm-login/
 ├── cypress.config.js            # config Quiz 3          -> report-login.html
 ├── cypress.intercept.config.js  # config Hari 16 (intercept) -> report-intercept.html
 ├── cypress.pom.config.js        # config Hari 17 (POM)     -> report-pom.html
+├── cypress.api.config.js        # config Hari 18 (API)     -> report-api.html
 ├── run-tests.bat                # shortcut Windows (double-click)
 ├── package.json
 └── README.md
@@ -365,3 +372,34 @@ Beberapa temuan saat membuat script yang mempengaruhi cara page object ditulis:
    page to load`).
 
 Dokumentasi lengkap: [cypress/e2e/pom/README-pom.md](cypress/e2e/pom/README-pom.md)
+
+## 10. API Automation using Cypress — Hari 18
+
+Testing API pada <https://fakeapi.platzi.com/en/rest/categories> memakai
+`cy.request`. **14 test case** (syarat minimal 12), setiap test punya assertion
+pada **status code** dan **response body value**.
+
+```bat
+npm run test:api
+start cypress\reports\report-api.html
+```
+
+Struktur (folder terpisah, pola sama dengan POM):
+
+```
+cypress/api/CategoryApi.js              # service layer: URL + method request
+cypress/support/data/categoryData.js    # payload, status code, pesan error
+cypress/e2e/api/category-api.cy.js      # TC-API-001 … TC-API-014
+cypress/e2e/api/README-api.md           # dokumentasi lengkap
+cypress.api.config.js                   # baseUrl API, tanpa video/screenshot
+```
+
+Cakupan: GET list, GET by id, parameter `limit`, POST, PUT, DELETE, alur
+create→read, create→update, create→delete→verify, id tidak ada, id non-numerik,
+validasi name kosong, validasi image kosong, produk per kategori, dan payload kosong.
+
+Bug API yang ditemukan dan didokumentasikan (tidak ditutupi):
+**POST `/categories` dengan body `{}` mengembalikan 500 Internal Server Error**,
+bukan 400 seperti field kosong lainnya. Test `TC-API-014` mengunci perilaku itu.
+
+Dokumentasi lengkap: [cypress/e2e/api/README-api.md](cypress/e2e/api/README-api.md)

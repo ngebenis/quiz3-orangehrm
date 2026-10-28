@@ -4,6 +4,7 @@ REM  Jalankan semua spec Cypress di Windows (CMD / double-click)
 REM  - Quiz 3      : cypress\e2e\login.cy.js
 REM  - Hari 16     : cypress\e2e\intercept\login-intercept.cy.js
 REM  - Hari 17     : cypress\e2e\pom\login-pom.cy.js
+REM  - Hari 18     : cypress\e2e\api\category-api.cy.js
 REM ============================================================
 setlocal
 cd /d "%~dp0"
@@ -37,6 +38,7 @@ echo [OK] Selesai. Report ada di folder cypress\reports\
 echo      - report-login.html
 echo      - report-intercept.html
 echo      - report-pom.html
+echo      - report-api.html
 pause
 exit /b 0
 
