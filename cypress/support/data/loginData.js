@@ -87,5 +87,10 @@ export const pageTitles = {
 export const urls = {
     login: '/web/index.php/auth/login',
     dashboard: '/web/index.php/dashboard/index',
-    forgotPassword: '/web/index.php/auth/requestPasswordResetCode'
+    forgotPassword: '/web/index.php/auth/requestPasswordResetCode',
+    // Ditambahkan untuk tugas 3 fitur (Hari 19)
+    directory: '/web/index.php/directory/viewDirectory',
+    recruitmentCandidates: '/web/index.php/recruitment/viewCandidates',
+    recruitmentVacancies: '/web/index.php/recruitment/viewJobVacancy',
+    addCandidate: '/web/index.php/recruitment/addCandidate'
 }

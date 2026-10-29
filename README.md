@@ -403,3 +403,41 @@ Bug API yang ditemukan dan didokumentasikan (tidak ditutupi):
 bukan 400 seperti field kosong lainnya. Test `TC-API-014` mengunci perilaku itu.
 
 Dokumentasi lengkap: [cypress/e2e/api/README-api.md](cypress/e2e/api/README-api.md)
+
+---
+
+## 11. Tugas 3 Fitur — Login, Directory, Recruitment (POM + Intercept)
+
+Automasi tiga fitur OrangeHRM demo dengan format **POM** lengkap
+(action, assertion, data, dan intercept), **8 test case per fitur** (total **24**).
+
+```bash
+npm run test:fitur:login          # Login       -> 8 passing
+npm run test:fitur:directory      # Directory   -> 8 passing
+npm run test:fitur:recruitment    # Recruitment -> 8 passing
+```
+
+| Lapisan | Folder |
+| --- | --- |
+| Action / Locator | `cypress/pages/` (`DirectoryPage.js`, `RecruitmentPage.js`, `LoginPage.js`) |
+| Data | `cypress/support/data/` (`directoryData.js`, `recruitmentData.js`, `loginData.js`) |
+| Intercept | `cypress/support/intercepts/` (`DirectoryIntercepts.js`, `RecruitmentIntercepts.js`, `LoginIntercepts.js`) |
+| Test Case + Assertion | `cypress/e2e/pom3/` (`directory.cy.js`, `recruitment.cy.js`, `login.cy.js`) |
+
+Konfigurasi: `cypress.pom3.config.js` — report `cypress/reports/report-pom3.html`.
+
+Dokumentasi rinci (tabel 24 test case, intercept, dan perilaku nyata aplikasi):
+[cypress/e2e/pom3/README-pom3.md](cypress/e2e/pom3/README-pom3.md)
+
+### Hasil eksekusi
+
+| Fitur | Hasil | Durasi |
+| --- | --- | --- |
+| Login | **8 passing** | ± 3–4 menit |
+| Directory | **8 passing** | ± 7 menit |
+| Recruitment | **8 passing** | ± 6 menit |
+
+### Video simulasi aplikasi
+
+`video-simulasi-orangehrm.mp4` — rekaman layar simulasi Login → Directory → Recruitment
+sambil menjalankan seluruh test case (3 spec, 24 test).
