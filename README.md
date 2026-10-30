@@ -439,5 +439,25 @@ Dokumentasi rinci (tabel 24 test case, intercept, dan perilaku nyata aplikasi):
 
 ### Video simulasi aplikasi
 
-`video-simulasi-orangehrm.mp4` — rekaman layar simulasi Login → Directory → Recruitment
-sambil menjalankan seluruh test case (3 spec, 24 test).
+File: **`video-simulasi-3fitur.mp4`** (h264, 1366x768, ± 3,5 menit) — rekaman layar
+simulasi pemakaian aplikasi Login → Directory → Recruitment beserta seluruh
+aktivitasnya (mengetik kredensial, membuka Directory, menggeser daftar karyawan,
+mengisi Employee Name, membuka tab Vacancies, dan membuka form Add Candidate).
+
+Cara membuat ulang video (Linux/CI dengan display virtual):
+
+```bash
+bash rekam-simulasi.sh
+```
+
+Skrip itu menjalankan `cypress run --headed` di atas Xvfb `:99` lalu merekam
+layar X dengan `ffmpeg -f x11grab`. Mode `--headed` wajib dipakai: pada mode
+headless, perekam bawaan Cypress (`video: true`) maupun `x11grab` menghasilkan
+area halaman yang kosong/hitam karena permukaan gambar AUT tidak dilukis ke
+display.
+
+Alur yang direkam ada di `cypress/e2e/demo/simulasi.cy.js` (di luar
+`specPattern`, jadi tidak ikut penilaian test case). Simulasi sengaja berada
+dalam **satu** `it` karena Cypress menghapus cookie antar `it`, sehingga sesi
+login tidak akan terbawa ke Directory dan Recruitment.
+
