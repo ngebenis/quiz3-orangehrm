@@ -48,18 +48,37 @@ quiz3-orangehrm-login/
 
 ## 2. Cara Menjalankan
 
+### Ringkas (semua tugas)
+
 ```bash
+# 1. Prasyarat: Node.js 18+ (disarankan LTS 20/22) -> https://nodejs.org
+node -v && npm -v
+
+# 2. Install dependensi (sekali saja, butuh internet)
 npm install
-npm run test:login          # Quiz 3      -> cypress/reports/report-login.html
-npm run test:intercept      # Hari 16     -> cypress/reports/report-intercept.html
-npm run test:pom            # Hari 17     -> cypress/reports/report-pom.html
-npm test                    # ketiga spec berurutan (headless)
-npx cypress open            # mode interaktif (Test Runner)
+
+# 3. Jalankan test
+npm run test:login          # Quiz 3        -> report-login.html
+npm run test:intercept      # Hari 16       -> report-intercept.html
+npm run test:pom            # Hari 17       -> report-pom.html
+npm run test:api            # Hari 18       -> report-api.html
+npm run test:fitur          # Tugas 3 Fitur -> report-pom3.html
 ```
 
+### Per fitur (Tugas 3)
+
+```bash
+npm run test:fitur:login        # 8 test case Login
+npm run test:fitur:directory    # 8 test case Directory
+npm run test:fitur:recruitment  # 8 test case Recruitment
+npm run test:fitur:open         # buka Test Runner interaktif (klik manual)
+```
+
+Jalankan **satu per satu**, jangan bersamaan — tiap run membuka satu proses
+Elektron; dua proses paralel bisa kehabisan memori.
+
 Butuh **Node.js 18+**. Setelah run, laporan HTML otomatis dibuat di
-`cypress/reports/`, dan rekaman video (tidak ikut di-commit karena `.gitignore`)
-muncul di `cypress/videos/`.
+`cypress/reports/`.
 
 ### Windows (CMD / PowerShell)
 
@@ -72,11 +91,13 @@ npm install
 npm run test:login
 npm run test:intercept
 npm run test:pom
+npm run test:api
+npm run test:fitur:login
 npx cypress open
 ```
 
-Atau cukup **double-click `run-tests.bat`** — script itu sudah menjalankan
-`npm install` (kalau `node_modules` belum ada) lalu kedua spec berurutan.
+Atau cukup **double-click `run-tests.bat`** — script itu menjalankan
+`npm install` (kalau `node_modules` belum ada) lalu seluruh spec berurutan.
 
 Catatan Windows:
 
@@ -89,6 +110,27 @@ Catatan Windows:
 - Path folder pakai `\`; semua perintah `cypress run` tetap sama.
 - Report dibuka dengan `start cypress\reports\report-login.html` (CMD) atau
   `start cypress/reports/report-login.html` (PowerShell).
+
+### Kalau `npm install` gagal / Cypress tidak terpasang
+
+```bat
+npm install --save-dev cypress@13.17.0
+npx cypress verify
+npx cypress install --force
+```
+
+Cypress mengunduh biner ± 200 MB saat pertama kali; kalau jaringan lambat,
+set proxy dulu (`npm config set proxy http://user:pass@host:port`).
+
+### Penting: spesifikasi minimum mesin
+
+- Resolusi layar minimal **1366x768** (viewport test 1280x720). Di layar kecil,
+  pakai `npx cypress open` lalu zoom out, atau tambahkan
+  `--config viewportWidth=1024,viewportHeight=600`.
+- Test memakai **demo publik** `opensource-demo.orangehrmlive.com` — butuh
+  internet stabil. Kalau situs demo sedang down/berubah data, test bisa gagal
+  meski script benar (mis. data karyawan contoh berubah).
+- `pageLoadTimeout` sudah dinaikkan ke 120 detik karena demo kadang lambat.
 
 ## 3. Daftar Test Case (12)
 
