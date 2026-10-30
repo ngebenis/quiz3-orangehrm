@@ -1,0 +1,106 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-10-30T00:45:18.216Z",
+    "end": "2026-10-30T00:47:15.505Z",
+    "duration": 117289,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "10495fc3-57b1-4450-bf61-203b05a5ceca",
+      "title": "",
+      "fullFile": "cypress/e2e/demo/simulasi.cy.js",
+      "file": "cypress/e2e/demo/simulasi.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "4bcb0cbd-23b6-4081-9119-8cd38e9e64ed",
+          "title": "SIMULASI APLIKASI - Login, Directory, Recruitment",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Simulasi pemakaian aplikasi: Login, Directory, Recruitment",
+              "fullTitle": "SIMULASI APLIKASI - Login, Directory, Recruitment Simulasi pemakaian aplikasi: Login, Directory, Recruitment",
+              "timedOut": null,
+              "duration": 115987,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// ---------- 1. LOGIN ----------\nloginPage.visit();\njeda(2500);\n// Mengetik lambat agar terlihat jelas di video\nloginPage.elements.usernameInput().type(_loginData.loginData.valid.username, {\n  delay: 140\n});\njeda(900);\nloginPage.elements.passwordInput().type(_loginData.loginData.valid.password, {\n  delay: 140\n});\njeda(900);\nloginPage.elements.loginButton().click();\ncy.url({\n  timeout: 60000\n}).should('include', _loginData.urls.dashboard);\njeda(3500);\n// ---------- 2. DIRECTORY ----------\ndirectoryPage.visit();\ndirectoryPage.waitForLoad();\njeda(3000);\n// Gulir daftar karyawan agar kartu terlihat\ngulir('bottom');\njeda(2000);\ngulir('top');\njeda(1500);\n// Pakai autocomplete nama karyawan\ndirectoryPage.elements.employeeNameInput().clear().type(_directoryData.seededEmployee.firstName, {\n  delay: 200\n});\njeda(3500);\n// Kosongkan kembali agar halaman bersih sebelum pindah fitur\ndirectoryPage.elements.employeeNameInput().clear();\njeda(1500);\n// ---------- 3. RECRUITMENT ----------\nrecruitmentPage.visitCandidates();\njeda(3500);\n// Gulir tabel kandidat\ngulir('bottom');\njeda(2000);\ngulir('top');\njeda(1500);\njeda(2000);\n// Pindah ke tab Vacancies\nrecruitmentPage.openVacanciesTab();\njeda(3500);\n// Buka form Add Candidate\nrecruitmentPage.visitAddCandidate();\njeda(3000);\ncy.contains('button', 'Save').should('be.visible');\njeda(2500);",
+              "err": {},
+              "uuid": "38ea32f0-dd5a-4b97-93a2-973854a43a47",
+              "parentUUID": "4bcb0cbd-23b6-4081-9119-8cd38e9e64ed",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "38ea32f0-dd5a-4b97-93a2-973854a43a47"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 115987,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "report-pom3",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "reportFilename": "report-pom3",
+        "html": true,
+        "json": true,
+        "overwrite": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

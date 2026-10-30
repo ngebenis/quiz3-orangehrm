@@ -8,7 +8,10 @@ const baseConfig = {
   viewportWidth: 1366,
   viewportHeight: 768,
   defaultCommandTimeout: 10000,
-  pageLoadTimeout: 60000,
+  // Demo OrangeHRM publik kadang lambat saat run dingin; 60 detik terbukti
+  // sempat habis ("Timed out after waiting 60000ms for your remote page to
+  // load"). 120 detik memberi ruang tanpa menyembunyikan kegagalan nyata.
+  pageLoadTimeout: 120000,
   video: true,
   screenshotOnRunFailure: true,
   retries: {

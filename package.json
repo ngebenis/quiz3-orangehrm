@@ -4,14 +4,19 @@
   "description": "Quiz 3 + Hari 16 - UI Automation Cypress untuk fitur Login OrangeHRM (12 test case + 12 test case intercept)",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test:login && npm run test:intercept && npm run test:pom && npm run test:api",
+    "test": "npm run test:login && npm run test:intercept && npm run test:pom && npm run test:api && npm run test:fitur:login",
     "test:login": "cypress run --config-file cypress.config.js --spec cypress/e2e/login.cy.js",
     "test:intercept": "cypress run --config-file cypress.intercept.config.js --spec cypress/e2e/intercept/login-intercept.cy.js",
     "test:open": "cypress open",
     "test:pom": "cypress run --config-file cypress.pom.config.js",
     "test:pom:open": "cypress open --config-file cypress.pom.config.js",
     "test:api": "cypress run --config-file cypress.api.config.js",
-    "test:api:open": "cypress open --config-file cypress.api.config.js"
+    "test:api:open": "cypress open --config-file cypress.api.config.js",
+    "test:fitur": "cypress run --config-file cypress.pom3.config.js --spec cypress/e2e/pom3/login.cy.js",
+    "test:fitur:login": "cypress run --config-file cypress.pom3.config.js --spec cypress/e2e/pom3/login.cy.js",
+    "test:fitur:directory": "cypress run --config-file cypress.pom3.config.js --spec cypress/e2e/pom3/directory.cy.js",
+    "test:fitur:recruitment": "cypress run --config-file cypress.pom3.config.js --spec cypress/e2e/pom3/recruitment.cy.js",
+    "test:fitur:open": "cypress open --config-file cypress.pom3.config.js"
   },
   "keywords": [
     "cypress",

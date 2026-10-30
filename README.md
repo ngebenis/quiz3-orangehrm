@@ -403,3 +403,61 @@ Bug API yang ditemukan dan didokumentasikan (tidak ditutupi):
 bukan 400 seperti field kosong lainnya. Test `TC-API-014` mengunci perilaku itu.
 
 Dokumentasi lengkap: [cypress/e2e/api/README-api.md](cypress/e2e/api/README-api.md)
+
+---
+
+## 11. Tugas 3 Fitur — Login, Directory, Recruitment (POM + Intercept)
+
+Automasi tiga fitur OrangeHRM demo dengan format **POM** lengkap
+(action, assertion, data, dan intercept), **8 test case per fitur** (total **24**).
+
+```bash
+npm run test:fitur:login          # Login       -> 8 passing
+npm run test:fitur:directory      # Directory   -> 8 passing
+npm run test:fitur:recruitment    # Recruitment -> 8 passing
+```
+
+| Lapisan | Folder |
+| --- | --- |
+| Action / Locator | `cypress/pages/` (`DirectoryPage.js`, `RecruitmentPage.js`, `LoginPage.js`) |
+| Data | `cypress/support/data/` (`directoryData.js`, `recruitmentData.js`, `loginData.js`) |
+| Intercept | `cypress/support/intercepts/` (`DirectoryIntercepts.js`, `RecruitmentIntercepts.js`, `LoginIntercepts.js`) |
+| Test Case + Assertion | `cypress/e2e/pom3/` (`directory.cy.js`, `recruitment.cy.js`, `login.cy.js`) |
+
+Konfigurasi: `cypress.pom3.config.js` — report `cypress/reports/report-pom3.html`.
+
+Dokumentasi rinci (tabel 24 test case, intercept, dan perilaku nyata aplikasi):
+[cypress/e2e/pom3/README-pom3.md](cypress/e2e/pom3/README-pom3.md)
+
+### Hasil eksekusi
+
+| Fitur | Hasil | Durasi |
+| --- | --- | --- |
+| Login | **8 passing** | ± 3–4 menit |
+| Directory | **8 passing** | ± 7 menit |
+| Recruitment | **8 passing** | ± 6 menit |
+
+### Video simulasi aplikasi
+
+File: **`video-simulasi-3fitur.mp4`** (h264, 1366x768, ± 3,5 menit) — rekaman layar
+simulasi pemakaian aplikasi Login → Directory → Recruitment beserta seluruh
+aktivitasnya (mengetik kredensial, membuka Directory, menggeser daftar karyawan,
+mengisi Employee Name, membuka tab Vacancies, dan membuka form Add Candidate).
+
+Cara membuat ulang video (Linux/CI dengan display virtual):
+
+```bash
+bash rekam-simulasi.sh
+```
+
+Skrip itu menjalankan `cypress run --headed` di atas Xvfb `:99` lalu merekam
+layar X dengan `ffmpeg -f x11grab`. Mode `--headed` wajib dipakai: pada mode
+headless, perekam bawaan Cypress (`video: true`) maupun `x11grab` menghasilkan
+area halaman yang kosong/hitam karena permukaan gambar AUT tidak dilukis ke
+display.
+
+Alur yang direkam ada di `cypress/e2e/demo/simulasi.cy.js` (di luar
+`specPattern`, jadi tidak ikut penilaian test case). Simulasi sengaja berada
+dalam **satu** `it` karena Cypress menghapus cookie antar `it`, sehingga sesi
+login tidak akan terbawa ke Directory dan Recruitment.
+

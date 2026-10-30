@@ -135,16 +135,28 @@ mempengaruhi cara page object ditulis:
    `OrangeHRM OS` tanpa nomor versi agar tidak rapuh.
 5. **Dashboard memakai grid 7 widget**, bukan class `.orangehrm-dashboard-card`,
    jadi `countWidgets()` menghitung anak dari `.orangehrm-dashboard-grid`.
-6. **Logout memicu unhandled promise rejection dari kode OrangeHRM sendiri** —
-   axios membatalkan request dashboard yang masih berjalan tepat saat logout,
-   lalu kode aplikasi membaca `.response` dari hasil yang sudah `undefined`:
+6. **Logout memicu crash di kode OrangeHRM sendiri.** Dashboard menembak
+   beberapa request API (action-summary, time-at-work, shortcuts, leaves,
+   subunit, buzz) begitu halaman tampil. Kalau logout diklik saat request itu
+   masih berjalan, axios membatalkannya, lalu kode OrangeHRM membaca
+   `.response` dari hasil yang sudah `undefined`:
 
    ```
    TypeError: Cannot read properties of undefined (reading 'response')
    ```
 
-   Cypress otomatis menggagalkan test karena error ini berasal dari application
-   code. Karena bukan kegagalan fitur yang diuji, `cypress/support/e2e.js`
-   mengabaikan **hanya pesan error itu** lewat `Cypress.on('uncaught:exception')`.
-   Handler-nya sempit — error lain tetap menggagalkan test supaya bug asli tidak
-   ikut tersembunyi.
+   Ini **race condition** — muncul atau tidak tergantung kecepatan jaringan,
+   jadi bisa lulus di satu mesin dan gagal di mesin lain.
+
+   **Perbaikan utama (akar masalah):** `DashboardPage.logout()` memanggil
+   `waitUntilDashboardSettled()` lebih dulu — menunggu grid dashboard terlihat,
+   minimal satu widget ter-render, dan `.oxd-loading-spinner` hilang. Dengan
+   begitu tidak ada request yang masih jalan saat logout, jadi race-nya tidak
+   pernah terjadi. Ini perbaikan sesungguhnya: test menunggu aplikasi siap,
+   bukan menutupi error.
+
+   **Jaring pengaman (lapis kedua):** `cypress/support/e2e.js` juga mengabaikan
+   **hanya pesan error itu** lewat `Cypress.on('uncaught:exception')`. Error
+   lain tetap menggagalkan test. Handler ini sudah diuji dengan dua probe:
+   rejection dengan pesan persis itu ditahan (test lulus), rejection dengan
+   pesan lain tetap menggagalkan test — jadi tidak menyembunyikan bug asli.

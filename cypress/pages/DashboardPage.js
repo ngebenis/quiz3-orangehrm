@@ -43,9 +43,33 @@ export class DashboardPage {
     }
 
     /**
+     * Tunggu dashboard benar-benar tenang sebelum meninggalkannya.
+     *
+     * Kenapa perlu: dashboard OrangeHRM menembak beberapa request API
+     * (action-summary, time-at-work, shortcuts, leaves, subunit, buzz) begitu
+     * halaman tampil. Kalau user logout saat request itu masih berjalan,
+     * axios membatalkannya, lalu kode OrangeHRM membaca `.response` dari hasil
+     * yang sudah undefined dan aplikasinya crash:
+     *
+     *   Cannot read properties of undefined (reading 'response')
+     *
+     * Cypress lalu menggagalkan test walau fitur login/logout-nya sendiri
+     * sebenarnya bekerja. Menunggu widget selesai render membuat request
+     * sudah kosong saat logout diklik, jadi race-nya tidak pernah terjadi.
+     */
+    waitUntilDashboardSettled() {
+        this.elements.dashboardGrid().should('be.visible');
+        cy.get('.orangehrm-dashboard-widget').should('have.length.at.least', 1);
+        // Spinner hilang = semua request widget sudah selesai.
+        cy.get('.oxd-loading-spinner', { timeout: 20000 }).should('not.exist');
+        return this;
+    }
+
+    /**
      * Perform logout
      */
     logout() {
+        this.waitUntilDashboardSettled();
         this.openUserDropdown();
         this.elements.logoutOption().click();
         return this;
