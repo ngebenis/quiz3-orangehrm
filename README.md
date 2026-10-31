@@ -1,3 +1,10 @@
+# Final Project : Automasi pada fitur Login, menu Directory, dan menu Recruitment pada website OrangeHRM demo mengunakan POM
+
+> Bootcamp Quality Assurance Sanbercode Batch 81 — Beni Santoso
+> Automasi pada fitur Login, menu Directory, dan menu Recruitment pada website OrangeHRM demo dengan format POM (action, assertion, data, dan intercept), masing-masing 8 test case. Lokasi: `cypress/e2e/pom3/` (24 test case, lihat `README-pom3.md`).
+
+---
+
 # Quiz 3 — UI Automation Login OrangeHRM (Cypress)
 
 Automation testing untuk fitur **Login** pada [OrangeHRM OS 5.9 Demo](https://opensource-demo.orangehrmlive.com/web/index.php/auth/login) menggunakan **Cypress** dengan format `it` block.

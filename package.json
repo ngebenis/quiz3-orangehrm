@@ -1,7 +1,7 @@
 {
   "name": "quiz3-orangehrm-login",
   "version": "1.0.0",
-  "description": "Quiz 3 + Hari 16 - UI Automation Cypress untuk fitur Login OrangeHRM (12 test case + 12 test case intercept)",
+  "description": "Final Project : Automasi pada fitur Login, menu Directory, dan menu Recruitment pada website OrangeHRM demo mengunakan POM | Quiz 3 + Hari 16 - UI Automation Cypress untuk fitur Login OrangeHRM (12 test case + 12 test case intercept)",
   "main": "index.js",
   "scripts": {
     "test": "npm run test:login && npm run test:intercept && npm run test:pom && npm run test:api && npm run test:fitur:login",
