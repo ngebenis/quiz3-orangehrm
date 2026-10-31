@@ -139,6 +139,35 @@ set proxy dulu (`npm config set proxy http://user:pass@host:port`).
   meski script benar (mis. data karyawan contoh berubah).
 - `pageLoadTimeout` sudah dinaikkan ke 120 detik karena demo kadang lambat.
 
+### Windows (CMD / PowerShell)
+
+Sama saja — semua script di `package.json` sudah portabel, tidak ada sintaks
+`VAR=value` khas Linux. Jalankan di **Command Prompt** atau **PowerShell**:
+
+```bat
+cd quiz3-orangehrm
+npm install
+npm run test:login
+npm run test:intercept
+npm run test:pom
+npx cypress open
+```
+
+Atau cukup **double-click `run-tests.bat`** — script itu sudah menjalankan
+`npm install` (kalau `node_modules` belum ada) lalu kedua spec berurutan.
+
+Catatan Windows:
+
+- Install **Node.js LTS** dari <https://nodejs.org> (pilih installer `.msi`), lalu
+  tutup-buka terminal supaya `node`/`npm` terbaca.
+- Cypress butuh desktop — jangan dijalankan lewat SSH tanpa display. `npm run
+  test:login` tetap jalan headless walau tanpa jendela terlihat.
+- Jika `npm run test:*` diblokir Execution Policy di PowerShell, pakai
+  `cmd /c "npm run test:login"` atau jalankan dari Command Prompt.
+- Path folder pakai `\`; semua perintah `cypress run` tetap sama.
+- Report dibuka dengan `start cypress\reports\report-login.html` (CMD) atau
+  `start cypress/reports/report-login.html` (PowerShell).
+
 ## 3. Daftar Test Case (12)
 
 | No | Test Case ID | Skenario | Tipe | Action utama | Assertion utama |
